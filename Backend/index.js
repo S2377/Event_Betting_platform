@@ -4,12 +4,18 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+
+
+
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+app.use(cors({ origin: 'http://localhost:5173' })); // Allow React app origin
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
 
 // MongoDB Connection
 MONGO_URI = "mongodb+srv://su22022:8qY1mmuRl1Vm8MTL@cluster0.wszee.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -39,13 +45,12 @@ const Bet = mongoose.model('Bet', new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 }));
 
-// Routes
-app.get('/', (req, res) => res.send('Welcome to the Betting Platform'));
 
 // User Routes
 app.post('/register', async (req, res) => {
     try {
         const user = new User(req.body);
+        console.log(user)
         await user.save();
         res.status(201).send(user);
     } catch (err) {
@@ -58,6 +63,7 @@ app.post('/login', async (req, res) => {
     const user = await User.findOne({ email, password });
     if (user) {
         res.send(user);
+        console.log("vallidation successful")
     } else {
         res.status(400).send({ error: 'Invalid credentials' });
     }
