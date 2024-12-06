@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Button from '../components/buttonComponent';
+import Button from '../components/ButtonComponent';
 
 const EventsPage = () => {
   const { id } = useParams();
