@@ -1,34 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import EventCard from '../components/EventCard';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import Button from '../components/buttonComponent';
 
 const EventsPage = () => {
-  const [events, setEvents] = useState([]);
+  const { id } = useParams();
+  const [event, setEvent] = useState(null);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/events'); // Replace with your backend endpoint
-        setEvents(response.data);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
+    // Simulate fetching event data (you can fetch from an API here)
+    const eventData = {
+      1: { name: 'Cricket Match', image: 'https://example.com/cricket.jpg', description: 'An exciting cricket match.' },
+      2: { name: 'Football Match', image: 'https://example.com/football.jpg', description: 'A thrilling football match.' },
     };
 
-    fetchEvents();
-  }, []);
+    setEvent(eventData[id]);
+  }, [id]);
 
-  return (
-    <div>
-      <h2>Available Events</h2>
-      <div>
-        {events.length > 0 ? (
-          events.map(event => <EventCard key={event._id} event={event} />)
-        ) : (
-          <p>No events available</p>
-        )}
-      </div>
+  const handleBetClick = () => {
+    // Handle the bet placement logic here
+    console.log(`Placing bet on ${event.name}`);
+  };
+
+  return event ? (
+    <div className="event-details">
+      <img src={event.image} alt={event.name} className="event-image" />
+      <h2>{event.name}</h2>
+      <p>{event.description}</p>
+      <Button name="Place Your Bet" onClick={handleBetClick} /> {/* Use the custom Button component */}
     </div>
+  ) : (
+    <p>Loading event details...</p>
   );
 };
 

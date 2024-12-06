@@ -6,7 +6,7 @@ import './Navbar.css'; // Optional, for styling
 const Navbar = () => {
   return (
     <nav className="navbar">
-      <h2>Betting Platform</h2>
+      <h2>LetsBet</h2>
       <ul>
         <li><Link to="/">Home</Link></li>
         <li><Link to="/register">EventDetails</Link></li>

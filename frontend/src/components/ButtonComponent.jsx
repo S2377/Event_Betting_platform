@@ -1,17 +1,9 @@
-// src/components/Button.jsx
 import React from 'react';
-import './Button.css'; // Import styles for the button (optional)
 
-// Reusable Button Component
-const Button = ({ text, onClick, type = 'button', className = '', disabled = false }) => {
+const Button = ({ name, onClick }) => {
   return (
-    <button
-      type={type}
-      className={`custom-button ${className}`}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {text}
+    <button onClick={onClick} className="custom-button">
+      {name}
     </button>
   );
 };
