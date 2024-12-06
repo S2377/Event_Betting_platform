@@ -45,7 +45,6 @@ const Bet = mongoose.model('Bet', new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 }));
 
-
 // User Routes
 app.post('/register', async (req, res) => {
     try {
