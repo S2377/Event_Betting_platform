@@ -35,6 +35,7 @@ const Event = mongoose.model('Event', new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String },
     odds: { type: Number, required: true },
+    photo_link : { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
 }));
 
@@ -83,6 +84,31 @@ app.get('/events', async (req, res) => {
     const events = await Event.find();
     res.send(events);
 });
+
+
+// Fetch Event by ID
+app.get('/events/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // Validate ObjectId format
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid Event ID format' });
+      }
+  
+      const event = await Event.findById(id);
+  
+      if (!event) {
+        return res.status(404).json({ error: 'Event not found' });
+      }
+  
+      res.status(200).json(event);
+    } catch (error) {
+      console.error('Error fetching event:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
 
 // Bet Routes
 app.post('/bets', async (req, res) => {
