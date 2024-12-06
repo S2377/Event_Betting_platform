@@ -2,17 +2,17 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import EventsPage from './pages/EventsPage';
 import Register from './components/Register';
 import Login from './components/Login';
-
+import Home from './pages/Home';
+import './App.css'
+import Navbar from './components/Navbar';
 function App() {
   return (
     <Router>
     <div>
-      <h1>Betting Platform</h1>
-      <nav>
-        <a href="/">Events</a> | <a href="/register">Register</a> | <a href="/login">Login</a>
-      </nav>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<EventsPage />} />
+        <Route path="/Home" element={<Home />} />
+        {/* <Route path="/" element={<EventsPage />} /> */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login/>} />
         <Route path="/dashboard" element={<EventsPage/>} />
