@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { fetchEvents } from '../api';  // Import the fetchEvents function
+<<<<<<< HEAD
 import './Home.css'; // Make sure to import the CSS file
+=======
+import './home.css'; // Make sure to import the CSS file
+import EventCard from '../components/EventCard'
+>>>>>>> b15b95b (modified events page)
 
 const Home = () => {
     const [events, setEvents] = useState([]);
@@ -15,8 +20,7 @@ const Home = () => {
                 setError(err.message);
             }
         };
-
-        fetchAllEvents();  // Fetch all events when the component mounts
+        fetchAllEvents();
     }, []);
 
     if (error) {
@@ -32,16 +36,7 @@ const Home = () => {
             <h1>All The Events</h1>
             <div className="event-cards-container">
                 {events.map((event) => (
-                    <div className="event-card" key={event._id}>
-                        <img
-                            src={event.photo_link}
-                            alt={event.title}
-                            className="event-image"
-                        />
-                        <h2>{event.title}</h2>
-                        <p>{event.description}</p>
-                        <p className="event-odds">Odds: {event.odds}</p>
-                    </div>
+                    <EventCard key={event._id} event={event} /> // Use the EventCard component for each event
                 ))}
             </div>
         </div>
