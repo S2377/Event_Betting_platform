@@ -26,7 +26,7 @@ const User = mongoose.model('User', new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    walletBalance: { type: Number, default: 1000 }, 
+    walletBalance: { type: Number, default: 1000 },
 }));
 
 
@@ -49,7 +49,7 @@ const Event = mongoose.model('Event', new mongoose.Schema({
     description: { type: String },
     more_description: { type: String },
     odds: { type: Number, required: true },
-    photo_link : { type: String, required: true },
+    photo_link: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
 }));
 
@@ -103,29 +103,53 @@ app.get('/events', async (req, res) => {
 // Fetch Event by ID
 app.get('/events/:id', async (req, res) => {
     try {
-      const { id } = req.params;
-  
-      // Validate ObjectId format
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'Invalid Event ID format' });
-      }
-  
-      const event = await Event.findById(id);
-  
-      if (!event) {
-        return res.status(404).json({ error: 'Event not found' });
-      }
-  
-      res.status(200).json(event);
+        const { id } = req.params;
+
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid Event ID format' });
+        }
+
+        const event = await Event.findById(id);
+
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        res.status(200).json(event);
     } catch (error) {
-      console.error('Error fetching event:', error);
+        console.error('Error fetching event:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+});
+app.post('/add-balance', async (req, res) => {
+    console.log('in ad balance ')
+    try {
+      const { userId, amount } = req.body;
+  
+      // Find the user
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Update wallet balance
+      user.walletBalance += amount;
+      await user.save();
+  
+      res.status(200).json({
+        message: 'Balance added successfully',
+        newWalletBalance: user.walletBalance,
+      });
+    } catch (err) {
+      console.error('Error adding balance:', err);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
   
 
-  app.post('/bets', async (req, res) => {
-    console("called")
+app.post('/bets', async (req, res) => {
     try {
         const { userId, eventId, amount } = req.body;
         console.log(amount)
