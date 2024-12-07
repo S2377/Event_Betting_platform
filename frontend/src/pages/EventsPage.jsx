@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
-import { useParams } from 'react-router-dom';
-import Button from '../components/ButtonComponent';
-=======
 import { useLocation, useParams } from 'react-router-dom';
 import { fetchEventById, placeBet } from '../api';
 import Button from '../components/buttonComponent';
 import './EventPage.css';
->>>>>>> b15b95b (modified events page)
-
 const EventDetail = () => {
   const { state } = useLocation(); // Access the state passed from EventCard
   const { id } = useParams();
