@@ -1,7 +1,7 @@
 // EventCard.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from './buttonComponent';
+import Button from './ButtonComponent';
 
 const EventCard = ({ event }) => {
   const navigate = useNavigate();
