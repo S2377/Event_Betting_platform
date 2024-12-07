@@ -43,6 +43,7 @@ app.get('/wallet/:userId', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 const Event = mongoose.model('Event', new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String },
@@ -124,8 +125,10 @@ app.get('/events/:id', async (req, res) => {
   
 
   app.post('/bets', async (req, res) => {
+    console("called")
     try {
         const { userId, eventId, amount } = req.body;
+        console.log(amount)
 
         // Validate that the user exists
         const user = await User.findById(userId);
