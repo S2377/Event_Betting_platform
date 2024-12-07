@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { fetchEvents } from '../api';  // Import the fetchEvents function
-
 import './Home.css'; // Make sure to import the CSS file
 import EventCard from '../components/EventCard'
 
