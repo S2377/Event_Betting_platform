@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { fetchEventById, placeBet, fetchWalletBalance } from '../api';
-import Button from '../components/ButtonComponent';
+import { fetchEventById, placeBet, fetchWalletBalance, addBalance } from '../api';
+import Button from '../components/buttonComponent';
 import './EventPage.css';
 
 const EventDetail = () => {
@@ -12,6 +12,8 @@ const EventDetail = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [walletBalance, setWalletBalance] = useState(null);
+  const [showAddBalanceForm, setShowAddBalanceForm] = useState(false);
+  const [addAmount, setAddAmount] = useState('');
   const userId = '6753d089218165b97342d8af';
 
   useEffect(() => {
@@ -41,7 +43,6 @@ const EventDetail = () => {
 
   const handleBetSubmit = async (e) => {
     e.preventDefault();
-
     if (!betAmount || isNaN(betAmount) || betAmount <= 0) {
       setError('Please enter a valid bet amount.');
       return;
@@ -68,6 +69,23 @@ const EventDetail = () => {
     }
   };
 
+  const handleAddBalance = async () => {
+    if (!addAmount || isNaN(addAmount) || Number(addAmount) <= 0) {
+      alert('Please enter a valid amount');
+      return;
+    }
+
+    try {
+      const response = await addBalance({ userId, amount: Number(addAmount) });
+      setWalletBalance(response.data.newWalletBalance);
+      setAddAmount('');
+      setShowAddBalanceForm(false);
+    } catch (err) {
+      console.error('Error adding balance:', err);
+      alert('Could not add balance');
+    }
+  };
+
   if (error) return <div className="error-message">Error: {error}</div>;
   if (!event) return <div className="loading-message">Loading...</div>;
 
@@ -75,7 +93,28 @@ const EventDetail = () => {
     <div className="event-detail">
       <div className="wallet-info">
         <span>Wallet Balance: ₹{walletBalance}</span>
+        <button 
+          className="add-balance-btn" 
+          onClick={() => setShowAddBalanceForm(true)}
+        >
+          Add Balance
+        </button>
       </div>
+      
+      {/* Conditional Add Balance Form */}
+      {showAddBalanceForm && (
+        <div className="add-balance-form">
+          <label>Amount to Add:</label>
+          <input 
+            type="number"
+            value={addAmount}
+            onChange={(e) => setAddAmount(e.target.value)}
+          />
+          <button onClick={handleAddBalance}>Submit</button>
+          <button onClick={() => setShowAddBalanceForm(false)}>Cancel</button>
+        </div>
+      )}
+
       <div className="banner" style={{ backgroundImage: `url(${event.photo_link})` }}>
         <h1 className="banner-title">{event.title}</h1>
       </div>
@@ -98,7 +137,6 @@ const EventDetail = () => {
           </div>
           <Button name="Place Bet" onClick={handleBetSubmit} className="place-bet-button" />
         </form>
-        {success && <div className="success-message">Your bet has been placed successfully!</div>}
       </div>
     </div>
   );
