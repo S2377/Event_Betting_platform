@@ -26,7 +26,8 @@ const User = mongoose.model('User', new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    walletBalance: { type: Number, default: 1000 }, 
+    walletBalance: { type: Number, default: 1000 },
+    totalAmountBet: { type: Number, default: 0 }, // New field 
 }));
 
 
@@ -143,6 +144,7 @@ app.get('/events/:id', async (req, res) => {
 
         // Deduct the amount from the user's wallet balance
         user.walletBalance -= amount;
+        user.totalAmountBet += amount; // Update leaderboard metric
         await user.save();
 
         const bet = new Bet({ userId, eventId, amount });
@@ -158,6 +160,45 @@ app.get('/events/:id', async (req, res) => {
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
+
+app.get('/leaderboard', async (req, res) => {
+    try {
+        const users = await User.find()
+            .sort({ totalAmountBet: -1 }) // Sort by totalAmountBet in descending order
+            .select('username totalAmountBet'); // Include relevant fields
+
+        res.status(200).json(users);
+    } catch (err) {
+        console.error('Error fetching leaderboard:', err);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/leaderboard/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const users = await User.find()
+            .sort({ totalAmountBet: -1 })
+            .select('username totalAmountBet');
+
+        const userRank = users.findIndex(user => user._id.toString() === userId) + 1;
+
+        if (userRank === 0) {
+            return res.status(404).send({ error: 'User not found in leaderboard' });
+        }
+
+        res.status(200).json({
+            rank: userRank,
+            user: users[userRank - 1], // Retrieve user details
+        });
+    } catch (err) {
+        console.error('Error fetching user rank:', err);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+});
+
+
 
 
 app.get('/bets', async (req, res) => {
