@@ -9,3 +9,5 @@ export const loginUser = (user) => axios.post(`${API_URL}/login`, user);
 export const placeBet = (bet) => axios.post(`${API_URL}/bets`, bet);
 export const fetchBets = () => axios.get(`${API_URL}/bets`);
 export const fetchEventById = (id) => axios.get(`${API_URL}/events/${id}`);
+export const fetchWalletBalance = (userId) => axios.get(`${API_URL}/wallet/${userId}`);
+    
