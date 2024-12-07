@@ -26,8 +26,23 @@ const User = mongoose.model('User', new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    walletBalance: { type: Number, default: 1000 }, 
 }));
 
+
+app.get('/wallet/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+        res.status(200).json({ walletBalance: user.walletBalance });
+    } catch (error) {
+        console.error('Error fetching wallet balance:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 const Event = mongoose.model('Event', new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String },
@@ -108,16 +123,39 @@ app.get('/events/:id', async (req, res) => {
   });
   
 
-// Bet Routes
-app.post('/bets', async (req, res) => {
+  app.post('/bets', async (req, res) => {
     try {
-        const bet = new Bet(req.body);
+        const { userId, eventId, amount } = req.body;
+
+        // Validate that the user exists
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+
+        // Check if user has sufficient wallet balance
+        if (user.walletBalance < amount) {
+            return res.status(400).send({ error: 'Insufficient wallet balance' });
+        }
+
+        // Deduct the amount from the user's wallet balance
+        user.walletBalance -= amount;
+        await user.save();
+
+        const bet = new Bet({ userId, eventId, amount });
         await bet.save();
-        res.status(201).send(bet);
+
+        res.status(201).send({
+            message: 'Bet placed successfully',
+            newWalletBalance: user.walletBalance,
+            bet,
+        });
     } catch (err) {
-        res.status(400).send(err);
+        console.error('Error processing bet:', err);
+        res.status(500).send({ error: 'Internal Server Error' });
     }
 });
+
 
 app.get('/bets', async (req, res) => {
     const bets = await Bet.find().populate('userId').populate('eventId');
