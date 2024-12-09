@@ -8,6 +8,9 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({ origin: 'http://localhost:5173' })); // Allow React app origin
+const User = require('./models/User');
+const Event = require('./models/Event');
+const Bet = require('./models/Bet');
 
 // Middleware
 app.use(cors());
@@ -20,14 +23,6 @@ MONGO_URI = "mongodb+srv://su22022:8qY1mmuRl1Vm8MTL@cluster0.wszee.mongodb.net/?
 mongoose.connect(MONGO_URI)
     .then(() => console.log('Connected to MongoDB Atlas'))
     .catch(err => console.error('MongoDB connection error:', err));
-
-// Models
-const User = mongoose.model('User', new mongoose.Schema({
-    username: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    walletBalance: { type: Number, default: 1000 },
-}));
 
 
 app.get('/wallet/:userId', async (req, res) => {
@@ -43,23 +38,6 @@ app.get('/wallet/:userId', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-const Event = mongoose.model('Event', new mongoose.Schema({
-    title: { type: String, required: true },
-    description: { type: String },
-    more_description: { type: String },
-    odds: { type: Number, required: true },
-    photo_link: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-}));
-
-const Bet = mongoose.model('Bet', new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
-    amount: { type: Number, required: true },
-    createdAt: { type: Date, default: Date.now },
-}));
-
 // User Routes
 app.post('/register', async (req, res) => {
     try {
