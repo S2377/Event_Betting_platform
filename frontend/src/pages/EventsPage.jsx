@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { fetchEventById, placeBet, fetchWalletBalance, addBalance } from '../api';
-import Button from '../components/buttonComponent';
+import Button from '../components/ButtonComponent';
 import './EventPage.css';
 
 const EventDetail = () => {
