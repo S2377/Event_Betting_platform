@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://event-betting-platform.onrender.com';
 
 export const fetchEvents = () => axios.get(`${API_URL}/events`);
 export const createEvent = (event) => axios.post(`${API_URL}/events`, event);
