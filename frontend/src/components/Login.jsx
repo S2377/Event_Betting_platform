@@ -19,7 +19,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/login', formData);
+      const response = await axios.post('https://event-betting-platform.onrender.com/login', formData);
 
       // Assuming response contains the user data when login is successful
       if (response.data) {
