@@ -6,8 +6,21 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const allowedOrigins = [
+    'http://localhost:5173', // Local development
+    'https://eventbetting.netlify.app' // Netlify URL
+];
 
-app.use(cors({ origin: 'http://localhost:5173' })); // Allow React app origin
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true // If cookies or auth headers are required
+}));
 const User = require('./models/User');
 const Event = require('./models/Event');
 const Bet = require('./models/Bet');
